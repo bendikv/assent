@@ -27,7 +27,11 @@ internal fun FragmentActivity.transact(action: FragmentTransaction.(Context) -> 
         action(this@transact)
         commit()
       }
-    it.executePendingTransactions()
+    try {
+      it.executePendingTransactions()
+    } catch (e: IllegalStateException) {
+      // Ignore
+    }
   }
 
 internal fun Fragment.transact(action: FragmentTransaction.(Context) -> Unit) {
@@ -36,5 +40,9 @@ internal fun Fragment.transact(action: FragmentTransaction.(Context) -> Unit) {
       action(activity ?: error("Fragment's activity is null."))
       commit()
     }
-  childFragmentManager.executePendingTransactions()
+  try {
+    childFragmentManager.executePendingTransactions()
+  } catch (e: IllegalStateException) {
+    // Ignore
+  }
 }

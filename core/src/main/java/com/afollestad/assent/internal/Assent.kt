@@ -16,10 +16,13 @@
 package com.afollestad.assent.internal
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.VisibleForTesting.Companion.PRIVATE
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import java.lang.ref.WeakReference
 
 internal class Assent {
   internal val requestQueue = Queue<PendingRequest>()
@@ -73,11 +76,16 @@ internal class Assent {
         get().permissionFragment!!
       }
 
-    fun forgetFragment() =
-      with(get()) {
-        log("forgetFragment()")
-        permissionFragment?.detach()
+    fun forgetFragment() = with(get()) {
+      log("forgetFragment()")
+      val weakFragment = WeakReference(permissionFragment)
+      Handler(Looper.getMainLooper()).post {
+        val fragment = weakFragment.get()
+        if (fragment != null && fragment.isAdded && !fragment.isRemoving) {
+          fragment.detach()
+        }
         permissionFragment = null
       }
+    }
   }
 }
