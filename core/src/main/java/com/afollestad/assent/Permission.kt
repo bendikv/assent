@@ -89,7 +89,9 @@ enum class Permission(val value: String) {
   /** @deprecated */
   @Suppress("DEPRECATION")
   @Deprecated("Manifest.permission.PROCESS_OUTGOING_CALLS is deprecated.")
-  PROCESS_OUTGOING_CALLS(Manifest.permission.PROCESS_OUTGOING_CALLS);
+  PROCESS_OUTGOING_CALLS(Manifest.permission.PROCESS_OUTGOING_CALLS),
+
+  READ_MEDIA_VISUAL_USER_SELECTED(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED);
 }
 
 fun String.toPermission(): Permission =
